@@ -1,5 +1,5 @@
 import React from 'react';
-import Image from 'next/image';
+
 const Cart = () => {
   const cartItems = [
     {
@@ -43,11 +43,7 @@ const Cart = () => {
               key={index}
               className="flex items-center justify-between p-4 mb-4 bg-white rounded shadow-sm"
             >
-              <img
-                src={item.image}
-                alt={item.name}
-                className="w-40 h-40 object-cover rounded mr-4"
-              />
+
               <div className="flex-1">
                 <h2 className="text-lg font-semibold">{item.name}</h2>
                 <p className="text-sm text-gray-600">Size: {item.size}</p>
