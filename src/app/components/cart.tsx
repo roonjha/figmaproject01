@@ -1,4 +1,5 @@
 import React from 'react';
+import Image from 'next/image';
 
 const Cart = () => {
   const cartItems = [
@@ -8,7 +9,7 @@ const Cart = () => {
       color: "White",
       price: 145,
       quantity: 1,
-      image: "Frame 33.png",
+      image: "/Frame 33.png", // Image path in the public folder
     },
     {
       name: "Checkered Shirt",
@@ -16,7 +17,7 @@ const Cart = () => {
       color: "Red",
       price: 180,
       quantity: 1,
-      image: "check.png",
+      image: "/check.png",
     },
     {
       name: "Skinny Fit Jeans",
@@ -24,7 +25,7 @@ const Cart = () => {
       color: "Blue",
       price: 240,
       quantity: 1,
-      image: "skinny.png",
+      image: "/skinny.png",
     },
   ];
 
@@ -43,7 +44,13 @@ const Cart = () => {
               key={index}
               className="flex items-center justify-between p-4 mb-4 bg-white rounded shadow-sm"
             >
-
+              <Image
+                src={item.image}
+                alt={item.name}
+                width={160}
+                height={160}
+                className="rounded mr-4 object-cover"
+              />
               <div className="flex-1">
                 <h2 className="text-lg font-semibold">{item.name}</h2>
                 <p className="text-sm text-gray-600">Size: {item.size}</p>
