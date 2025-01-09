@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Component4brandsname from "./components/component4brandsname";
 import UpperHeader from "./components/upperheader";
 import Navbar from "./components/navbar";
