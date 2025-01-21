@@ -5,15 +5,19 @@ import ReviewsSection from '../components/Reviews'
 import YouMightAlsoLike from '../components/Mightlike'
 import Footer from '../components/footer'
 import Bread from '../components/Bread'
+import products from '@/sanity/schemaTypes/products'
+import ProductPage from '../products/page'
 
 
 export default function ProductDetail() {
   return (
     <div>
       <UpperHeader/>
-      <Navbar/>
+      <Navbar onSearch={function (query: string): void {
+        throw new Error('Function not implemented.')
+      } }/>
       <Bread/>
-      <ProductCard/>
+      <ProductPage/>
       <ReviewsSection/>
       <YouMightAlsoLike/>
       <Footer/>

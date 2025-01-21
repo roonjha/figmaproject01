@@ -21,15 +21,23 @@ const HeroSection = () => {
           </button>
         </div>
 
-        {/* Image Section */}
-        <div className="md:w-1/2 flex justify-center relative">
-          <Image
-            src="/rectangle.png" // Ensure this file is placed in your public folder
-            alt="Fashion Style"
-            width={1400} // Adjust dimensions based on your requirement
-            height={663}
-            //className="rounded-lg shadow-lg object-cover object-bottom"
-          />
+        <div className="w-[60%] mr-[8%] flex flex-col items-center relative">
+  {/* Image */}
+  <Image
+    src="/rectangle.png" // Ensure this file is placed in your public folder
+    alt="Fashion Style"
+    width={800} // Adjust dimensions based on your requirement
+    height={50}
+    className="rounded-lg shadow-slate-900 object-fill object-bottom"
+  />
+
+  {/* Text Below the Image with Hover and Text Shadow Effects */}
+  <div className="mt-4 w-full text-center">
+    <p className="text-gray-700 text-sm sm:text-base hover:text-black hover:scale-105 transition-all duration-300 shadow-md">
+    
+    </p>
+  </div>
+     
 
           {/* Decorative Stars */}
           <div className="absolute top-0 left-1/4 transform -translate-x-1/2 -translate-y-1/2">

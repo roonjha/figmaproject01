@@ -1,86 +1,74 @@
-import React from 'react';
-import Image from 'next/image';
+'use client';
 
-type Product = {
-  id: number;
-  name: string;
-  price: number;
-  rating: number;
-  image: string;
-};
+import { useState } from "react";
+import { Product } from "@/sanity/lib/type";
 
-const Bestselling: React.FC = () => {
-  const products: Product[] = [
-    {
-      id: 1,
-      name: 'T-shirt with Tape Details',
-      price: 120,
-      rating: 4.5,
-      image: '/tshirt.png',
-    },
-    {
-      id: 2,
-      name: 'Skinny Fit Jeans',
-      price: 240,
-      rating: 3.5,
-      image: '/skinny.png',
-    },
-    {
-      id: 3,
-      name: 'Checkered Shirt',
-      price: 180,
-      rating: 4.5,
-      image: '/check.png',
-    },
-    {
-      id: 4,
-      name: 'Sleeve Striped T-shirt',
-      price: 130,
-      rating: 4.0,
-      image: '/strip.png',
-    },
-  ];
+interface BestsellingProps {
+  products: Product[];
+}
+
+const Bestselling: React.FC<BestsellingProps> = ({ products }) => {
+  // Cart state to hold cart items
+  const [cartItems, setCartItems] = useState<any[]>([]);
+
+  // Add to cart functionality
+  const addToCart = (product: any) => {
+    setCartItems((prevItems) => {
+      const existingItem = prevItems.find((item) => item._id === product._id);
+      if (existingItem) {
+        return prevItems.map((item) =>
+          item._id === product._id
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
+        );
+      } else {
+        return [...prevItems, { ...product, quantity: 1 }];
+      }
+    });
+  };
 
   return (
-    <section className="bg-[#F2F0F1]">
-      <div className="container mx-auto px-4">
-      <hr className="border-teal-500  mx-auto" />
-        <h2 className="text-4xl text-green-700 font-bold text-center mb-8" style={{ fontFamily: 'Integral CF,  sans-serif', fontWeight: 'bold' }}>
-          TOP SELLING
-          <hr className="border-teal-500  mx-auto" />
-        </h2>
-        
-        
-        
-        <div className="grid sm:grid-cols-4  gap-6">
-          {products.map((product) => (
-            <div
-              key={product.id}
-              className="bg-gray-200 rounded-lg shadow-lg p-4 text-center"
-            >
-              <Image
-                src={product.image}
-                alt={product.name}
-                width={200}
-                height={200}
-                className="mx-auto mb-4"
-              />
-              <h3 className="text-lg font-semibold mb-2">{product.name}</h3>
-              <p className="text-gray-600 text-sm mb-2">${product.price}</p>
-              <p className="text-yellow-500">Rating: {product.rating} stars</p>
-            </div>
-          ))}
-        </div>
+    <div>
+      <h2 className="text-4xl text-center font-bold mt-2 mb-1">Best Selling Products List</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6">
+        {products.map((product) => (
+          <div key={product._id} className="border p-4 rounded shadow flex flex-col justify-between">
+            <img
+              src={product.imageUrl}
+              alt={product.name}
+              className="w-full h-auto object-cover mb-2"
+            />
+            <h3 className="text-xl font-semibold">{product.name}</h3>
+            <p className="text-gray-600">Price: ${product.price}</p>
+            <p className={`text-gray-600 ${product.stockStatus === "outStock" ? "text-red-600" : "text-green-600"}`}>
+              {product.stockStatus === "inStock" ? "In Stock" : "Out of Stock"}
+            </p>
 
-        <div className="text-center mt-8">
-          <button className="bg-black text-white py-2 px-4 rounded-full">View All</button>
-        </div>
-        <br></br>
-  
-      
+            <div className="flex justify-center mt-4"> {/* Center the button */}
+              <button
+                onClick={() => addToCart(product)}
+                className={`w-full py-2 ${product.stockStatus === "inStock" ? "bg-blue-500" : "bg-gray-500"} text-white rounded-md`}
+                disabled={product.stockStatus === "outStock"}
+              >
+                Add to Cart
+              </button>
+            </div>
+          </div>
+        ))}
       </div>
-      
-      </section>
+
+      {/* Display Cart Items */}
+      <div className="mt-6">
+        <h3 className="text-2xl font-bold">Cart</h3>
+        <ul className="mt-4">
+          {cartItems.map((item) => (
+            <li key={item._id} className="flex justify-between p-2 border-b">
+              <span>{item.name} x {item.quantity}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
   );
 };
 
