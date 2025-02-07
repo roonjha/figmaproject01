@@ -1,50 +1,104 @@
-import { GetStaticProps, GetStaticPaths } from "next";
-import { client } from "@/sanity/lib/sanity"; // Make sure this is the correct import
+import { SanityClient } from "sanity"; // Ensure this is correctly initialized
+import { Product } from "@/sanity/lib/type"; // Ensure this type is correctly defined
+import { useState, useEffect } from "react";
 
-// This function fetches all the product IDs for static generation
-export const getStaticPaths: GetStaticPaths = async () => {
-  // Fetch all products to get the product IDs
-  const products = await client.fetch(`*[_type == "products"]{ _id }`);
-  
-  // Generate paths for each product
-  const paths = products.map((product: { _id: string }) => ({
-    params: { productId: product._id }, // Mapping product IDs to paths
-  }));
-
-  return { paths, fallback: "blocking" }; // Block until all pages are generated
-};
-
-// This function fetches the details of a specific product using the productId
-export const getStaticProps: GetStaticProps = async ({ params }) => {
-  const { productId } = params!; // Get the productId from the URL
-
-  // Fetch product details using the productId
-  const product = await client.fetch(
-    `*[_type == "products" && _id == $productId][0]`,
-    { productId }
-  );
-
-  return {
-    props: { product }, // Pass the product details as props
+// Define the props interface for the component
+interface ProductDetailsProps {
+  params: {
+    productId: string;
   };
+}
+
+// Function to fetch product details from Sanity
+const fetchProductDetails = async (productId: string): Promise<Product | null> => {
+  try {
+    const query = `*[_type == "product" && _id == $productId][0]{
+      _id,
+      name,
+      price,
+      imageUrl,
+      stockStatus,
+      description
+    }`;
+    const product = await SanityClient.fetch(query, { productId });
+    if (!product) {
+      throw new Error("Product not found");
+    }
+    return product;
+  } catch (error) {
+    console.error("Error fetching product:", error);
+    return null;
+  }
 };
 
-const ProductDetailPage = ({ product }: { product: any }) => {
-  if (!product) {
-    return <div>Product not found</div>; // Fallback if product is not found
+// Function to generate static params for static site generation (SSG)
+export async function generateStaticParams() {
+  const query = `*[_type == "product"]{ _id }`;
+  const products = await SanityClient.fetch<{ _id: string }[]>(query);
+  return products.map((product) => ({
+    productId: product._id,
+  }));
+}
+
+// Main component to display product details
+export default function ProductDetails({ params }: ProductDetailsProps) {
+  const [product, setProduct] = useState<Product | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const getProduct = async () => {
+      console.log("Product ID:", params.productId); // Debugging
+      const data = await fetchProductDetails(params.productId);
+      if (data) {
+        setProduct(data);
+      } else {
+        setError("Product not found");
+      }
+      setLoading(false);
+    };
+    getProduct();
+  }, [params.productId]);
+
+  // Display loading state
+  if (loading) {
+    return <div className="text-center py-6">Loading...</div>;
   }
 
+  // Display error state
+  if (error) {
+    return <div className="text-center text-red-500">{error}</div>;
+  }
+
+  // Display if no product is found
+  if (!product) {
+    return <div className="text-center text-red-500">Product not found</div>;
+  }
+
+  // Render the product details
   return (
-    <div>
-      <h1>{product.name}</h1>
-      <img src={product.imageUrl} alt={product.name} />
-      <p>{product.description}</p>
-      <p>Price: ${product.price}</p>
-      <p>Sizes: {product.sizes?.join(", ")}</p>
-      <p>Colors: {product.colors?.join(", ")}</p>
-      <p>Discount: {product.discountPercent}%</p>
+    <div className="container mx-auto p-4">
+      <h1 className="text-3xl font-bold mb-4">{product.name}</h1>
+      {product.imageUrl ? (
+        <img
+          src={product.imageUrl}
+          alt={product.name}
+          className="w-full h-64 object-cover mb-4"
+        />
+      ) : (
+        <div className="w-full h-64 bg-gray-300 flex items-center justify-center">
+          <span className="text-gray-500">No Image Available</span>
+        </div>
+      )}
+      <p className="text-gray-700 mb-2">Price: ${product.price}</p>
+      <p
+        className={`mb-2 ${
+          product.stockStatus === "inStock" ? "text-green-600" : "text-red-600"
+        }`}
+      >
+        {product.stockStatus === "inStock" ? "In Stock" : "Out of Stock"}
+      </p>
+      <p className="text-gray-600">{product.description}</p>
     </div>
   );
-};
-
-export default ProductDetailPage;
+}

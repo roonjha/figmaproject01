@@ -136,7 +136,7 @@ const Casual: React.FC = () => {
                 <img src={product.image} alt={product.name} className="mb-2 rounded" />
                 <h2 className="font-medium text-lg">{product.name}</h2>
                 <p className="text-gray-500">${product.price}</p>
-                {product.discount && (
+                {product.discount && (  
                   <p className="text-red-500 text-sm">-{product.discount}</p>
                 )}
                 <p className="text-yellow-500">⭐ {product.rating}</p>

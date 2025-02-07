@@ -1,6 +1,9 @@
 // lib/types.ts
 
 export interface Product {
+    id: Key | null | undefined
+    rating: ReactI18NextChildren | Iterable<ReactI18NextChildren>
+    discount: any
     stockStatus: string
     imageUrl: string | undefined
     _id: string

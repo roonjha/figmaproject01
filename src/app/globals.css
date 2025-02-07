@@ -16,6 +16,16 @@ h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-geist-mono), monospace; /* Custom font for headers */
 }
 
+/* Sticky navbar style */
+.sticky-navbar {
+  position: sticky;
+  top: -2; /* Stick it to the top of the page */
+  z-index: 1000; /* Ensure it's on top of other content */
+  width: 100%; /* Ensure the navbar stretches across the full width */
+  background-color: white; /* Optional: Background color for visibility */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional: Shadow for visual separation */
+}
+
 /* You can add other custom global styles here */
 
 @layer base {
@@ -82,3 +92,29 @@ h1, h2, h3, h4, h5, h6 {
     @apply bg-background text-foreground;
   }
 }
+/* Blinking effect for the New Arrival button */
+@keyframes blink {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Apply the blinking effect to the 'New Arrival' button */
+.blinking-button {
+  animation: blink 2s infinite; /* Slower blink effect */
+  font-weight: bold; /* Optional: Makes the text bold */
+  color: white; /* Optional: Color for the text */
+}
+
+/* Stop blinking on hover */
+.blinking-button:hover {
+  animation: none; /* Stop animation on hover */
+}
+
+

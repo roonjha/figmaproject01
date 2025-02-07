@@ -1,60 +1,46 @@
-import { Product } from '@/sanity/lib/type';
-import Image from 'next/image';  // Import next/image
+import type React from "react"
+import Link from "next/link"
+import Image from "next/image"
+import type { Product } from "@/sanity/lib/type"
 
 interface ProductCardProps {
-  product: Product;
+  product: Product
+  addToCart: (product: Product) => void
 }
 
-const ProductCard = ({ product }: ProductCardProps) => {
+const ProductCard: React.FC<ProductCardProps> = ({ product, addToCart }) => {
   return (
-    <div className="product-card">
-      {/* Image section using next/image */}
-      <div className="image-container">
-        <Image
-          src={product.image?.asset?.url || '/default-image.jpg'}  // Default fallback image if not available
-          alt={product.name}  // Alt text for accessibility
-          width={300}  // Set the width you need
-          height={300}  // Set the height you need
-          objectFit="cover"  // This ensures the image fills the container while maintaining its aspect ratio
-          className="product-image"  // Optional, for custom styling
-        />
-      </div>
+    <div className="border p-4 rounded shadow flex flex-col h-full">
+      <Link href={`/product/${product._id}`} className="flex flex-col h-full group">
+        <div className="relative w-full h-48 mb-2">
+          <Image
+            src={product.imageUrl || "/placeholder-image.jpg"}
+            alt={product.name}
+            layout="fill"
+            objectFit="cover"
+            className="group-hover:opacity-80 transition-opacity"
+          />
+        </div>
+        <h3 className="text-xl font-semibold mb-0 group-hover:text-blue-600 transition-colors">{product.name}</h3>
 
-      {/* Product details */}
-      <div className="product-details">
-        <h2>{product.name}</h2>
-        <p className="product-description">{product.description}</p>
+        <div className="flex justify-between items-center mt-2 flex-grow">
+          <div className="flex flex-col justify-between">
+            <p className="text-gray-600 mb-0">Price: ${product.price}</p>
+            {product.discount && <p className="text-red-500 text-sm mb-0">-{product.discount}</p>}
+          </div>
+          <p className="text-yellow-500 mb-0">⭐ {product.rating}</p>
+        </div>
+      </Link>
 
-        {/* Price */}
-        <p className="product-price">
-          <strong>Price:</strong> ${product.price}
-        </p>
-
-        {/* Discount Percent */}
-        {product.discountPercent && (
-          <p className="product-discount">
-            <strong>Discount:</strong> {product.discountPercent}%
-          </p>
-        )}
-
-        {/* Category */}
-        <p><strong>Category:</strong> {product.category}</p>
-
-        {/* Sizes */}
-        {product.sizes?.length > 0 && (
-          <p><strong>Sizes:</strong> {product.sizes.join(', ')}</p>
-        )}
-
-        {/* Colors */}
-        {product.colors?.length > 0 && (
-          <p><strong>Colors:</strong> {product.colors.join(', ')}</p>
-        )}
-
-        {/* New Product Badge */}
-        {product.new && <span className="badge">New</span>}
-      </div>
+      <button
+        onClick={() => addToCart(product)}
+        className="mt-2 w-full py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
+      >
+        Add to Cart
+      </button>
     </div>
-  );
-};
+  )
+}
 
-export default ProductCard;
+export default ProductCard
+

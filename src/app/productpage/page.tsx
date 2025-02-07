@@ -6,7 +6,7 @@ import YouMightAlsoLike from '../components/Mightlike'
 import Footer from '../components/footer'
 import Bread from '../components/Bread'
 import products from '@/sanity/schemaTypes/products'
-import ProductPage from '../products/page'
+import ProductPage from '../pages/products/[id]'
 
 
 export default function ProductDetail() {
