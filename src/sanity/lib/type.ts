@@ -1,6 +1,7 @@
 // src/sanity/lib/type.ts
 
 export interface Product {
+  tags: any;
   quantity: number;
   _id: string; // Unique product ID from Sanity
   name: string;

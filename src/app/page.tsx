@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState} from "react";
 import { useRouter } from "next/navigation";
 import Component4brandsname from "./components/component4brandsname";
 import UpperHeader from "./components/upperheader";
@@ -42,7 +42,7 @@ export default function Home() {
         const productsData = await fetchProducts();
         setProducts(productsData);
         setFilteredProducts(productsData);
-      } catch (err) {
+      } catch  {
         setError("Failed to fetch products. Please try again.");
       } finally {
         setLoading(false);
@@ -59,7 +59,7 @@ export default function Home() {
       products.filter(
         (product) =>
           product.name.toLowerCase().includes(lowerQuery) ||
-          product.tags?.some((tag) => tag.toLowerCase().includes(lowerQuery))
+          product.tags?.some((tag: string) => tag.toLowerCase().includes(lowerQuery))
       )
     );
   };
