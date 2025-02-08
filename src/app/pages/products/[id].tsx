@@ -1,5 +1,5 @@
 // app/products/[id].tsx
-
+'use client'
 import { useRouter } from 'next/router';
 import { client } from '@/sanity/lib/sanity'; // Ensure the correct path
 import { useState, useEffect } from 'react';
