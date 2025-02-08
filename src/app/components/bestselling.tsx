@@ -9,17 +9,17 @@ interface BestsellingProps {
 }
 
 const Bestselling: React.FC<BestsellingProps> = ({ products }) => {
-  const [cartItems, setCartItems] = useState<any[]>([]);
+  const [cartItems, setCartItems] = useState<Product[]>([]);
   const router = useRouter(); // Initialize the router for navigation
 
   // Add to cart functionality
-  const addToCart = (product: any) => {
+  const addToCart = (product: Product) => {
     setCartItems((prevItems) => {
       const existingItem = prevItems.find((item) => item._id === product._id);
       if (existingItem) {
         return prevItems.map((item) =>
           item._id === product._id
-            ? { ...item, quantity: item.quantity + 1 }
+            ? { ...item, quantity: (item.quantity || 1) + 1 }
             : item
         );
       } else {
@@ -72,7 +72,7 @@ const Bestselling: React.FC<BestsellingProps> = ({ products }) => {
 
       {/* Display Cart Items */}
       <div className="mt-6">
-        <h3 className="text-2xl font-bold"></h3>
+        <h3 className="text-2xl font-bold">Cart Items</h3>
         <ul className="mt-4">
           {cartItems.map((item) => (
             <li key={item._id} className="flex justify-between p-2 border-b">

@@ -28,7 +28,6 @@ const Page = () => {
     email: "",
     address: "",
   });
-  const [showConfirmation, setShowConfirmation] = useState(false);
 
   useEffect(() => {
     const storedCart = localStorage.getItem("cartItems");
@@ -71,11 +70,11 @@ const Page = () => {
 
   const handlePlaceOrder = () => {
     if (validateForm()) {
-      setShowConfirmation(true);
       setCartItems([]);
       updateLocalStorage([]);
       setIsCheckingOut(false);
       setCustomerInfo({ name: "", email: "", address: "" });
+      alert("Order placed successfully!");
     } else {
       alert("Please fill in all required fields.");
     }
