@@ -11,16 +11,22 @@ const client = createClient({
   useCdn: false,
 });
 
-async function getSearchResults(query: string) {
+// Define Product Interface
+interface Product {
+  _id: string;
+  name: string;
+  price: number;
+  imageUrl: string;
+}
+
+async function getSearchResults(query: string): Promise<Product[]> {
   if (!query) return [];
 
   const searchQuery = `*[_type == "products" && (lower(name) match "*${query.toLowerCase()}*" || lower(description) match "*${query.toLowerCase()}*")] {
     _id,
     name,
     price,
-    description,
-    "imageUrl": image.asset->url,
-    category
+    "imageUrl": image.asset->url
   }`;
 
   try {
@@ -31,7 +37,7 @@ async function getSearchResults(query: string) {
   }
 }
 
-async function getAllProducts() {
+async function getAllProducts(): Promise<Product[]> {
   const allProductsQuery = `*[_type == "products"] {
     _id,
     name,
@@ -48,9 +54,9 @@ async function getAllProducts() {
 }
 
 export default function SearchPage() {
-  const [products, setProducts] = useState<any[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [allProducts, setAllProducts] = useState<any[]>([]);
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
   const carouselRef = useRef<HTMLDivElement>(null);
 
   const scrollCarousel = (direction: "left" | "right") => {
@@ -110,61 +116,58 @@ export default function SearchPage() {
                     Add to Cart
                   </button>
                 </div>
-
-                
               ))}
             </div>
           </div>
         )}
 
         {/* All Products Section */}
-{allProducts.length > 0 && (
-  <div className="mt-28 w-full relative">
-    <h2 className="text-2xl font-extrabold mb-4 text-center">You May Also Like it</h2>
+        {allProducts.length > 0 && (
+          <div className="mt-28 w-full relative">
+            <h2 className="text-2xl font-extrabold mb-4 text-center">You May Also Like</h2>
 
-    <div className="grid xl:grid-cols-12 items-center">
-      {/* Left Button for Carousel Scroll */}
-      <button
-        onClick={() => scrollCarousel("left")}
-        className="text-blue-600 p-2 bg-white border border-gray-300 rounded-full hover:bg-gray-100 col-span-1"
-      >
-        &lt;
-      </button>
+            <div className="grid xl:grid-cols-12 items-center">
+              {/* Left Button for Carousel Scroll */}
+              <button
+                onClick={() => scrollCarousel("left")}
+                className="text-blue-600 p-2 bg-white border border-gray-300 rounded-full hover:bg-gray-100 col-span-1"
+              >
+                &lt;
+              </button>
 
-      {/* Carousel Content for All Products */}
-      <div
-        ref={carouselRef}
-        className="col-span-10 flex space-x-6 pb-4"
-        style={{ overflow: "hidden" }} // Hide the scroll bar
-      >
-        {allProducts.map((product) => (
-          <div key={product._id} className="min-w-[200px] border p-4 rounded-lg shadow-md">
-            <img
-              src={product.imageUrl || "/placeholder.svg"}
-              alt={product.name}
-              className="w-full h-52 object-cover rounded-lg"
-            />
-            <h3 className="text-lg font-semibold mt-2">{product.name}</h3>
-            <p className="text-gray-600">${product.price}</p>
+              {/* Carousel Content for All Products */}
+              <div
+                ref={carouselRef}
+                className="col-span-10 flex space-x-6 pb-4"
+                style={{ overflow: "hidden" }} // Hide the scroll bar
+              >
+                {allProducts.map((product) => (
+                  <div key={product._id} className="min-w-[200px] border p-4 rounded-lg shadow-md">
+                    <img
+                      src={product.imageUrl || "/placeholder.svg"}
+                      alt={product.name}
+                      className="w-full h-52 object-cover rounded-lg"
+                    />
+                    <h3 className="text-lg font-semibold mt-2">{product.name}</h3>
+                    <p className="text-gray-600">${product.price}</p>
 
-            <button className="flex items-center col-span-1 justify-center mt-4 p-2 bg-blue-500 text-white rounded-lg w-full hover:bg-blue-600">
-              Add to Cart
-            </button>
+                    <button className="flex items-center col-span-1 justify-center mt-4 p-2 bg-blue-500 text-white rounded-lg w-full hover:bg-blue-600">
+                      Add to Cart
+                    </button>
+                  </div>
+                ))}
+              </div>
+
+              {/* Right Button for Carousel Scroll */}
+              <button
+                onClick={() => scrollCarousel("right")}
+                className="text-blue-600 p-2 bg-white border border-gray-300 rounded-full hover:bg-gray-100 col-span-1"
+              >
+                &gt;
+              </button>
+            </div>
           </div>
-        ))}
-      </div>
-
-      {/* Right Button for Carousel Scroll */}
-      <button
-        onClick={() => scrollCarousel("right")}
-        className="text-blue-600 p-2 bg-white border border-gray-300 rounded-full hover:bg-gray-100 col-span-1"
-      >
-        &gt;
-      </button>
-    </div>
-  </div>
-)}
-
+        )}
       </div>
 
       <Footer />

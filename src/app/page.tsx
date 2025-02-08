@@ -6,18 +6,18 @@ import Component4brandsname from "./components/component4brandsname";
 import UpperHeader from "./components/upperheader";
 import Navbar from "./components/navbar";
 import HeroSection from "./components/herosection";
-import NewArrivals from "./components/newarrival";
 import Bestselling from "./components/bestselling";
 import BrowseByStyle from "./components/browse";
 import CustomerReviews from "./components/customerreview";
 import Footer from "./components/footer";
 import { fetchProducts } from "@/sanity/lib/fetch";
+import { Product } from "@/sanity/lib/type"; // Assuming this type exists
 
 export default function Home() {
   const router = useRouter();
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
-  const [products, setProducts] = useState<any[]>([]);
-  const [filteredProducts, setFilteredProducts] = useState<any[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -31,18 +31,18 @@ export default function Home() {
         router.push("/auth/login");
       }
     }
-  }, []);
+  }, [router]); // ✅ Added `router` dependency
 
   useEffect(() => {
     const loadProducts = async () => {
       try {
         setLoading(true);
         setError(null);
-        const productsData = await fetchProducts();
+        const productsData: Product[] = await fetchProducts();
         setProducts(productsData);
         setFilteredProducts(productsData);
       } catch (err) {
-        setError("Failed to fetch products. Please try again later.");
+        setError(`Failed to fetch products: ${(err as Error).message}`);
       } finally {
         setLoading(false);
       }
@@ -54,9 +54,9 @@ export default function Home() {
   }, [isAuthenticated]);
 
   const handleSearch = (query: string) => {
-    const filtered = products.filter((product: any) =>
+    const filtered = products.filter((product) =>
       product.name.toLowerCase().includes(query.toLowerCase()) ||
-      product.tags.some((tag: string) => tag.toLowerCase().includes(query.toLowerCase()))
+      product.tags.some((tag) => tag.toLowerCase().includes(query.toLowerCase()))
     );
     setFilteredProducts(filtered);
   };

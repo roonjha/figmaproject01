@@ -1,7 +1,9 @@
-'use client'
-import { useSearchParams } from 'next/navigation';
-import { client } from '@/sanity/lib/sanity'; // Ensure the correct path
-import { useState, useEffect } from 'react';
+"use client";
+
+import { useSearchParams } from "next/navigation";
+import { client } from "@/sanity/lib/sanity"; // Ensure the correct path
+import { useState, useEffect } from "react";
+import Image from "next/image";
 
 interface Product {
   _id: string;
@@ -13,7 +15,7 @@ interface Product {
 
 const ProductPage = () => {
   const searchParams = useSearchParams();
-  const id = searchParams.get('id');  // Get the product ID from the URL
+  const id = searchParams.get("id"); // Get the product ID from the URL
 
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -31,16 +33,17 @@ const ProductPage = () => {
               description,
               "imageUrl": image.asset->url
             }`,
-            { id }  // Pass the product ID here
+            { id } // Pass the product ID here
           );
 
           if (fetchedProduct) {
-            setProduct(fetchedProduct);  // Set the product data
+            setProduct(fetchedProduct); // Set the product data
           } else {
-            setError('Product not found');
+            setError("Product not found");
           }
         } catch (err) {
-          setError('Failed to fetch product. Please try again later.');
+          console.error("Error fetching product:", err); // Log the error
+          setError("Failed to fetch product. Please try again later.");
         } finally {
           setLoading(false);
         }
@@ -57,7 +60,13 @@ const ProductPage = () => {
   return (
     <div>
       <h1>{product.name}</h1>
-      <img src={product.imageUrl} alt={product.name} />
+      <Image
+        src={product.imageUrl}
+        alt={product.name}
+        width={500} // Adjust the width
+        height={500} // Adjust the height
+        priority // Optimize loading
+      />
       <p>{product.description}</p>
       <p>Price: ${product.price}</p>
     </div>
