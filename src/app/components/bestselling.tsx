@@ -50,7 +50,7 @@ const Bestselling: React.FC<BestsellingProps> = ({ products }) => {
             />
             <h3 className="text-xl font-semibold">{product.name}</h3>
             <p className="text-gray-600">Price: ${product.price}</p>
-            <p className={`text-gray-600 ${product.stockStatus === "outStock" ? "text-red-600" : "text-green-600"}`}>
+            <p className={`text-gray-600 ${product.stockStatus === "outOfStock" ? "text-red-600" : "text-green-600"}`}>
               {product.stockStatus === "inStock" ? "In Stock" : "Out of Stock"}
             </p>
 
@@ -61,7 +61,7 @@ const Bestselling: React.FC<BestsellingProps> = ({ products }) => {
                   addToCart(product);
                 }}
                 className={`w-full py-2 ${product.stockStatus === "inStock" ? "bg-blue-500" : "bg-gray-500"} text-white rounded-md`}
-                disabled={product.stockStatus === "outStock"}
+                disabled={product.stockStatus === "outOfStock"}
               >
                 Add to Cart
               </button>
