@@ -1,45 +1,45 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { useState, useEffect, useCallback } from "react"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { useAtom } from "jotai"
-import { cartCountAtom } from "../cartatom/cartAtom"
-import { createClient } from "next-sanity"
-import debounce from "lodash/debounce"
+import type React from "react";
+import { useState, useEffect, useCallback } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useAtom } from "jotai";
+import { cartCountAtom } from "../cartatom/cartAtom";
+import { createClient } from "next-sanity";
+import debounce from "lodash/debounce";
 
 const client = createClient({
   projectId: "77aypzxg",
   dataset: "production",
   apiVersion: "2023-05-03",
   useCdn: false,
-})
+});
 
 interface Product {
-  _id: string
-  name: string
-  price: number
-  imageUrl?: string
+  _id: string;
+  name: string;
+  price: number;
+  imageUrl?: string;
 }
 
 const Navbar: React.FC = () => {
-  const [cartCount] = useAtom(cartCountAtom)
-  const [searchQuery, setSearchQuery] = useState("")
-  const [suggestions, setSuggestions] = useState<Product[]>([])
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const router = useRouter()
+  const [cartCount] = useAtom(cartCountAtom);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [suggestions, setSuggestions] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
   const debouncedSearch = useCallback(
     debounce(async (query: string) => {
       if (query.trim() === "") {
-        setSuggestions([])
-        return
+        setSuggestions([]);
+        return;
       }
 
-      setIsLoading(true)
-      setError(null)
+      setIsLoading(true);
+      setError(null);
 
       try {
         const results = await client.fetch<Product[]>(`
@@ -49,28 +49,28 @@ const Navbar: React.FC = () => {
             price,
             "imageUrl": image.asset->url
           }[0...5]
-        `)
-        setSuggestions(results)
+        `);
+        setSuggestions(results);
       } catch (err) {
-        console.error("Error fetching suggestions:", err)
-        setError("Failed to fetch suggestions. Please try again.")
+        console.error("Error fetching suggestions:", err);
+        setError("Failed to fetch suggestions. Please try again.");
       } finally {
-        setIsLoading(false)
+        setIsLoading(false);
       }
     }, 300),
-    [],
-  )
+    [setSuggestions, setIsLoading, setError] // Added missing dependencies
+  );
 
   useEffect(() => {
-    debouncedSearch(searchQuery)
-  }, [searchQuery, debouncedSearch])
+    debouncedSearch(searchQuery);
+  }, [searchQuery, debouncedSearch]);
 
   const handleSearch = (event: React.FormEvent) => {
-    event.preventDefault()
+    event.preventDefault();
     if (searchQuery.trim()) {
-      router.push(`/search?query=${encodeURIComponent(searchQuery.trim())}`)
+      router.push(`/search?query=${encodeURIComponent(searchQuery.trim())}`);
     }
-  }
+  };
 
   return (
     <nav className="bg-white shadow-md py-3 sticky top-0 z-10">
@@ -104,7 +104,7 @@ const Navbar: React.FC = () => {
                         <Link href={`/search?query=${encodeURIComponent(product.name)}`} className="flex items-center">
                           {product.imageUrl && (
                             <img
-                              src={product.imageUrl || "/placeholder.svg"}
+                              src={product.imageUrl ?? "/placeholder.svg"} // Ensure imageUrl is defined
                               alt={product.name}
                               className="w-10 h-10 object-cover mr-2"
                             />
@@ -167,8 +167,7 @@ const Navbar: React.FC = () => {
         </div>
       </div>
     </nav>
-  )
-}
+  );
+};
 
-export default Navbar
-
+export default Navbar;
