@@ -1,7 +1,7 @@
 // src/sanity/lib/type.ts
 
 export interface Product {
-  tags: any;
+  tags: string[]; // Assuming tags are an array of strings
   quantity: number;
   _id: string; // Unique product ID from Sanity
   name: string;
