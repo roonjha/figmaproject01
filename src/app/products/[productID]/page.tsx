@@ -1,4 +1,4 @@
-"use client"; // Required for using hooks in a Server Component
+'use client'
 
 import { useParams } from "next/navigation"; // Correct way to get route params in App Router
 import { useState, useEffect } from "react";
