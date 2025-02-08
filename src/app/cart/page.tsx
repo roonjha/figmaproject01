@@ -59,8 +59,12 @@ const Page = () => {
   const toggleDescription = (id: string) => {
     setExpandedDescriptions((prev) => {
       const updated = new Set(prev);
-      updated.has(id) ? updated.delete(id) : updated.add(id);
-      return updated;
+      if (updated.has(id)) {
+        updated.delete(id);
+      } else {
+        updated.add(id);
+      }
+      return new Set(updated);
     });
   };
 
