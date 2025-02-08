@@ -1,6 +1,5 @@
-// app/products/[id].tsx
 'use client'
-import { useRouter } from 'next/router';
+import { useSearchParams } from 'next/navigation';
 import { client } from '@/sanity/lib/sanity'; // Ensure the correct path
 import { useState, useEffect } from 'react';
 
@@ -13,8 +12,8 @@ interface Product {
 }
 
 const ProductPage = () => {
-  const { query } = useRouter();
-  const { id } = query;  // Get the product ID from the URL
+  const searchParams = useSearchParams();
+  const id = searchParams.get('id');  // Get the product ID from the URL
 
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -53,7 +52,6 @@ const ProductPage = () => {
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
-
   if (!product) return <div>No product data available</div>;
 
   return (
